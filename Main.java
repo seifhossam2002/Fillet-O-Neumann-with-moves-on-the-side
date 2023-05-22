@@ -8,6 +8,8 @@ public class Main {
 	static PipelineRegisterMemoryWriteBack pipelineRegisterMemoryWriteBack;
 	static boolean isJump;
 	static boolean finishDecode=false;
+	static int clockcycle=1;
+	static boolean fetch=false;
 
 	public Main() {
 		registerFile = new FileOfRegisters();
@@ -19,6 +21,7 @@ public class Main {
 		pipelineRegisterMemoryWriteBack = new PipelineRegisterMemoryWriteBack();
 		isJump = false;
 	}
+
 
 	public static void fetch() {
 		int instruction = 0;
@@ -36,7 +39,7 @@ public class Main {
 	}
 
 	public static void decode() {
-		// fetch();
+
 		decodeHelper();
 	}
 
