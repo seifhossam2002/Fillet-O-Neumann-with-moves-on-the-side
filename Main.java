@@ -7,12 +7,9 @@ public class Main {
 	static PipelineRegisterExecuteMemory pipelineRegisterExecuteMemory;
 	static PipelineRegisterMemoryWriteBack pipelineRegisterMemoryWriteBack;
 	static boolean isJump;
-	static boolean finishDecode = false;
-	static boolean finishExecute = false;
-	static boolean finishMemory = false;
-	static boolean finishWriteBack = false;
+
 	static int clockcycle = 1;
-	static boolean fetch = false;
+
 
 	public Main() {
 		registerFile = new FileOfRegisters();
@@ -33,23 +30,6 @@ public class Main {
 			if (clockcycle % 2 == 1) {//odd
 				fetch();
 			}
-			if (finishDecode) {
-				execute();
-				finishDecode = false;
-			}
-			if (finishExecute) {
-				memory();
-				finishExecute = false;
-			}
-			if (finishMemory) {
-				writeBack();
-				finishMemory = false;
-			}
-			if (finishWriteBack) {
-				fetch();
-				finishWriteBack = false;
-			}
-			clockcycle++;
 		}
 	}
 
