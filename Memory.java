@@ -88,8 +88,9 @@ public class Memory {
                     }
                     imm = imm3;
                     String instruction = opcode + r1 + "00000" + imm;
-                    int instruction2 = Integer.parseInt(instruction, 2);
-                    memory[counter] = instruction2;
+                    BigInteger bigInteger = new BigInteger(instruction, 2);
+
+                    memory[counter] = bigInteger.intValue();
                     counter++;
 
                 } else if (parts.length == 2) {
