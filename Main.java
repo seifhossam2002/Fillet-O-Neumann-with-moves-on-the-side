@@ -7,9 +7,12 @@ public class Main {
 	static PipelineRegisterExecuteMemory pipelineRegisterExecuteMemory;
 	static PipelineRegisterMemoryWriteBack pipelineRegisterMemoryWriteBack;
 	static boolean isJump;
-	static boolean finishDecode=false;
-	static int clockcycle=1;
-	static boolean fetch=false;
+	static boolean finishDecode = false;
+	static boolean finishExecute = false;
+	static boolean finishMemory = false;
+	static boolean finishWriteBack = false;
+	static int clockcycle = 1;
+	static boolean fetch = false;
 
 	public Main() {
 		registerFile = new FileOfRegisters();
@@ -22,6 +25,33 @@ public class Main {
 		isJump = false;
 	}
 
+	public static void start() {
+		while (true) {
+			if (pc.getValue() > memory.counter)
+				break;
+
+			if (clockcycle % 2 == 1) {//odd
+				fetch();
+			}
+			if (finishDecode) {
+				execute();
+				finishDecode = false;
+			}
+			if (finishExecute) {
+				memory();
+				finishExecute = false;
+			}
+			if (finishMemory) {
+				writeBack();
+				finishMemory = false;
+			}
+			if (finishWriteBack) {
+				fetch();
+				finishWriteBack = false;
+			}
+			clockcycle++;
+		}
+	}
 
 	public static void fetch() {
 		int instruction = 0;
@@ -39,7 +69,7 @@ public class Main {
 	}
 
 	public static void decode() {
-
+		clockcycle++;
 		decodeHelper();
 	}
 
@@ -126,10 +156,12 @@ public class Main {
 		pipelineRegisterDecodeExcute.setImm(imm);
 		pipelineRegisterDecodeExcute.setAddress(address);
 		finishDecode = true;
+		clockcycle++;
 		// execute();
 	}
 
 	public static void execute() {
+		clockcycle++;
 		executeHelper();
 	}
 
@@ -215,6 +247,7 @@ public class Main {
 
 		}
 		pipelineRegisterExecuteMemory.setOpcode(opcode);
+		clockcycle++;
 		// pipelineRegisterExecuteMemory.add(pipelineRegisterDecodeExcute.get(index));
 		// memory();
 	}
@@ -250,6 +283,7 @@ public class Main {
 			fetch();
 		}
 		// writeBack();
+		clockcycle++;
 	}
 
 	public static void writeBack() {
@@ -260,6 +294,7 @@ public class Main {
 			registerFile.get(index).setValue(r1.getValue());
 		}
 		// fetch();
+		clockcycle++;
 	}
 
 	public static void main(String[] args) {
@@ -275,13 +310,10 @@ public class Main {
 				fetch();
 			}
 
-			if(!finishDecode) {
+			if (!finishDecode) {
 				decode();
 			}
 
-			
-
-			
 		}
 
 		System.out.println(registerFile.get(1).getValue());
