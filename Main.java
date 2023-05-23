@@ -347,10 +347,10 @@ public class Main {
 
 	public static void main(String[] args) {
 		Main main = new Main();
-		registerFile.get(2).setValue(4);
-		registerFile.get(3).setValue(1);
-		registerFile.get(5).setValue(8);
-		registerFile.get(6).setValue(1);
+		// registerFile.get(2).setValue(4);
+		// registerFile.get(3).setValue(1);
+		// registerFile.get(5).setValue(8);
+		// registerFile.get(6).setValue(1);
 		// registerFile.get(7).setValue(2);
 		// registerFile.get(8).setValue(3);
 		// registerFile.get(9).setValue(4);
@@ -368,13 +368,13 @@ public class Main {
 		// registerFile.get(21).setValue(16);
 		start();
 
-		System.out.println(registerFile.get(1).getValue());
-		System.out.println(registerFile.get(4).getValue());
+		// System.out.println(registerFile.get(1).getValue());
+		// System.out.println(registerFile.get(4).getValue());
 		System.out.println(registerFile.get(8).getValue());
-		System.out.println(registerFile.get(10).getValue());
-		System.out.println(registerFile.get(13).getValue());
-		System.out.println(registerFile.get(16).getValue());
-		System.out.println(registerFile.get(19).getValue());
+		// System.out.println(registerFile.get(10).getValue());
+		// System.out.println(registerFile.get(13).getValue());
+		// System.out.println(registerFile.get(16).getValue());
+		// System.out.println(registerFile.get(19).getValue());
 	}
 
 }
