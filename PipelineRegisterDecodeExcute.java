@@ -6,15 +6,16 @@ public class PipelineRegisterDecodeExcute {
     private int shamt;
     private int imm;
     private int address;
+    private int pc;
 
     public PipelineRegisterDecodeExcute() {
         this.opcode = -1;
         this.r1 = null;
         this.r2 = null;
         this.r3 = null;
-        this.shamt = 0-1;
-        this.imm = 0-1;
-        this.address = 0-1;
+        this.shamt = 0 - 1;
+        this.imm = 0 - 1;
+        this.address = 0 - 1;
     }
 
     public int getOpcode() {
@@ -71,5 +72,13 @@ public class PipelineRegisterDecodeExcute {
 
     public void setAddress(int address) {
         this.address = address;
+    }
+
+    public int getPc() {
+        return pc;
+    }
+
+    public void setPc(int pc) {
+        this.pc = pc;
     }
 }
