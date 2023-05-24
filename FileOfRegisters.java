@@ -36,4 +36,7 @@ public class FileOfRegisters extends ArrayList<Register> {
 		this.add(new Register("R31", 0));
 		this.add(new Register("PC", 0));
 	}
+	public void setValue(int index, int value) {
+        this.get(index).setValue(value);
+    }
 }

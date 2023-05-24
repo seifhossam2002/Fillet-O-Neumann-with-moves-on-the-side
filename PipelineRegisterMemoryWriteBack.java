@@ -1,8 +1,10 @@
 public class PipelineRegisterMemoryWriteBack {
     private Register r1;
-    
-    public PipelineRegisterMemoryWriteBack(){
+    private boolean isStore;
+
+    public PipelineRegisterMemoryWriteBack() {
         this.r1 = null;
+        isStore = false;
     }
 
     public Register getR1() {
@@ -15,5 +17,13 @@ public class PipelineRegisterMemoryWriteBack {
 
     public void setR1Value(int value) {
         this.r1.setValue(value);
+    }
+
+    public boolean isStore() {
+        return isStore;
+    }
+
+    public void setStore(boolean isStore) {
+        this.isStore = isStore;
     }
 }
