@@ -30,6 +30,8 @@ public class Main {
 	}
 
 	public static void start() {
+		System.out.println("Start");
+		System.out.println("clock: 0");
 		int totalNoOfInstructions = 7 + ((memory.counter - 1) * 2);
 		System.out.println("Total number of instructions: " + totalNoOfInstructions);
 		// fetch , write back always odd
@@ -83,8 +85,9 @@ public class Main {
 				totalNoOfInstructions += 2;
 				isJEQ = new Hashtable<>();
 			}
+
 		}
-		// printAllRegistersAndMemory();
+		printAllRegistersAndMemory();
 	}
 
 	private static void printAllRegistersAndMemory() {
@@ -93,9 +96,7 @@ public class Main {
 			System.out.println("R" + i + ": " + registerFile.get(i).getValue());
 		}
 		System.out.println("Memory: ");
-		for (int i = 0; i < memory.counter; i++) {
-			System.out.println(i + ": " + memory.memory[i]);
-		}
+		memory.printMemory();
 	}
 
 	private static void print(int clockcycle) {

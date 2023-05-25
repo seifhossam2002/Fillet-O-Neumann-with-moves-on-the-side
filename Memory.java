@@ -268,11 +268,13 @@ public class Memory {
         }
 
     }
-
+public void printMemory(){
+        for(int i = 0; i < memory.counter; i++){
+            System.out.println("memory[ "+ i +" ] :"+memory[i]);
+        }
+}
     public static void main(String[] args) {
         Memory memory = new Memory();
-        System.out.println(memory.memory[0]);
-        System.out.println(memory.memory[1]);
-        System.out.println(memory.memory[2]);
+        memory.printMemory();
     }
 }
