@@ -26,7 +26,7 @@ public class Main {
 		pipelineRegisterDecodeExcute = new PipelineRegisterDecodeExcute();
 		pipelineRegisterExecuteMemory = new PipelineRegisterExecuteMemory();
 		pipelineRegisterMemoryWriteBack = new PipelineRegisterMemoryWriteBack();
-		isJEQ = new Hashtable<>();
+
 	}
 
 	public static void start() {
@@ -83,7 +83,7 @@ public class Main {
 				counterDecode = 0;
 				counterExecute = 0;
 				totalNoOfInstructions += 2;
-				isJEQ = new Hashtable<>();
+
 			}
 
 		}
@@ -103,42 +103,38 @@ public class Main {
 		System.out.println("Clock cycle: " + clockcycle);
 		System.out.println("Fetch/Decode: " + pipelineRegisterFetchDecode.getInstructionLine() + " "
 				+ pipelineRegisterFetchDecode.getPc());
-		System.out.print("Decode/Execute: "+pipelineRegisterDecodeExcute.getOpcode()+" "+ " " + 
-		pipelineRegisterDecodeExcute.getShamt() + " " + pipelineRegisterDecodeExcute.getImm() + " " +
-		pipelineRegisterDecodeExcute.getAddress()+" ");
-		try{
-			System.out.print(pipelineRegisterDecodeExcute.getR1().toString()+" ");
-		}catch(Exception e){
+		System.out.print("Decode/Execute: " + pipelineRegisterDecodeExcute.getOpcode() + " " + " " +
+				pipelineRegisterDecodeExcute.getShamt() + " " + pipelineRegisterDecodeExcute.getImm() + " " +
+				pipelineRegisterDecodeExcute.getAddress() + " ");
+		try {
+			System.out.print(pipelineRegisterDecodeExcute.getR1().toString() + " ");
+		} catch (Exception e) {
 			System.out.print("null ");
 		}
-		try{
-			System.out.print(pipelineRegisterDecodeExcute.getR2().toString()+" ");
-		}
-		catch(Exception e){
+		try {
+			System.out.print(pipelineRegisterDecodeExcute.getR2().toString() + " ");
+		} catch (Exception e) {
 			System.out.print("null ");
 		}
-		try{
-			System.out.print(pipelineRegisterDecodeExcute.getR3().toString()+" ");
-		}
-		catch(Exception e){
+		try {
+			System.out.print(pipelineRegisterDecodeExcute.getR3().toString() + " ");
+		} catch (Exception e) {
 			System.out.print("null ");
 		}
 		System.out.println();
 		System.out.print("Execute/Memory: PC " + pipelineRegisterExecuteMemory.getPc()
 				+ " Address " + pipelineRegisterExecuteMemory.getAddress() + " opcode "
 				+ pipelineRegisterExecuteMemory.getOpcode());
-		try{
+		try {
 			System.out.print(" R1 " + pipelineRegisterExecuteMemory.getR1().toString());
-		}
-		catch(Exception e){
+		} catch (Exception e) {
 			System.out.print(" null ");
 		}
 		System.out.println();
 		System.out.print("Memory/WriteBack: " + " isStore " + pipelineRegisterMemoryWriteBack.isStore());
-		try{
+		try {
 			System.out.print(" R1 " + pipelineRegisterMemoryWriteBack.getR1().toString());
-		}
-		catch(Exception e){
+		} catch (Exception e) {
 			System.out.print("null ");
 		}
 		System.out.println("PC: " + pc.getValue());
@@ -147,12 +143,12 @@ public class Main {
 
 	public static void fetch() {
 		int instruction = 0;
-
 		// Complete the fetch() body...
-		if(pipelineRegisterExecuteMemory.isBranchTaken()){
+
+		if (pipelineRegisterExecuteMemory.isBranchTaken()) {
 			pc.setValue(pipelineRegisterExecuteMemory.getPc());
 			pipelineRegisterExecuteMemory.setBranchTaken(false);
-			System.out.println("current pc"+pipelineRegisterExecuteMemory.getPc());
+			System.out.println("current pc" + pipelineRegisterExecuteMemory.getPc());
 		}
 		instruction = memory.memory[pc.getValue()];
 		pipelineRegisterFetchDecode.setInstructionLine(instruction);
@@ -262,27 +258,10 @@ public class Main {
 		// execute();
 	}
 
-	public static Object[] execute() {
+	public static void execute() {
 		// clockcycle++;
 		// executeHelper();
-		int opcode = pipelineRegisterDecodeExcute.getOpcode();
-		Register r1 = pipelineRegisterDecodeExcute.getR1();
-		Register r2 = pipelineRegisterDecodeExcute.getR2();
-		Register r3 = pipelineRegisterDecodeExcute.getR3();
-		int shamt = pipelineRegisterDecodeExcute.getShamt();
-		int imm = pipelineRegisterDecodeExcute.getImm();
-		int address = pipelineRegisterDecodeExcute.getAddress();
-		int pc = pipelineRegisterDecodeExcute.getPc();
-		Object[] tmp = new Object[8];
-		tmp[0] = opcode;
-		tmp[1] = r1;
-		tmp[2] = r2;
-		tmp[3] = r3;
-		tmp[4] = shamt;
-		tmp[5] = imm;
-		tmp[6] = address;
-		tmp[7] = pc;
-		return tmp;
+
 	}
 
 	public static void executeHelper() {
@@ -320,12 +299,15 @@ public class Main {
 			case 4:
 				// JEQ
 				if (r1.getValue() == r2.getValue()) {
-					myPc += 1 + address;
-					pc.setValue(myPc + 1 + address);
-					isJEQ.put(4, true);
+					myPc += imm-1;
+					pc.setValue(myPc);
 					pipelineRegisterExecuteMemory.setBranchTaken(true);
-				} else
-					isJEQ.put(4, false);
+					pipelineRegisterFetchDecode = new PipelineRegisterFetchDecode();
+					pipelineRegisterDecodeExcute = new PipelineRegisterDecodeExcute();
+					pipelineRegisterExecuteMemory = new PipelineRegisterExecuteMemory();
+					clear = true;
+					pipelineRegisterMemoryWriteBack.setStore(false);
+				}
 				break;
 			case 5:
 				// and
@@ -343,6 +325,11 @@ public class Main {
 				String tmp = temp + "" + address;
 				myPc = Integer.parseInt(tmp);
 				pipelineRegisterExecuteMemory.setBranchTaken(true);
+				pipelineRegisterFetchDecode = new PipelineRegisterFetchDecode();
+				pipelineRegisterDecodeExcute = new PipelineRegisterDecodeExcute();
+				pipelineRegisterExecuteMemory = new PipelineRegisterExecuteMemory();
+				clear = true;
+				pipelineRegisterMemoryWriteBack.setStore(false);
 				break;
 			case 8:
 				// LSL
@@ -404,17 +391,6 @@ public class Main {
 			pipelineRegisterMemoryWriteBack.setR1Value(r1.getValue());
 			pipelineRegisterMemoryWriteBack.setStore(true);
 		}
-		if (isBranchTaken || (isJEQ.size() != 0 && isJEQ.get(4))) {
-			pipelineRegisterDecodeExcute = new PipelineRegisterDecodeExcute();
-			pipelineRegisterExecuteMemory = new PipelineRegisterExecuteMemory();
-			clear = true;
-			pipelineRegisterMemoryWriteBack.setStore(false);
-		} else {
-			if (isJEQ.size() != 0) {
-				isJEQ = new Hashtable<>();
-				pipelineRegisterMemoryWriteBack.setStore(false);
-			}
-		}
 		// finishMemory = true;
 	}
 
@@ -435,12 +411,13 @@ public class Main {
 		Main main = new Main();
 		registerFile.setValue(7, 3);
 		registerFile.setValue(8, 4);
-		registerFile.setValue(2, 5);
+		registerFile.setValue(2, 6);
 		registerFile.setValue(3, 6);
 		registerFile.setValue(5, 7);
 		registerFile.setValue(6, 8);
-
+		
 		start();
+
 	}
 
 }
