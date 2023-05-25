@@ -6,14 +6,12 @@ import java.math.BigInteger;
 
 public class Memory {
     int[] memory;
-    // int[] instructionMemory;
     boolean flagimm = false;
     boolean flagshamt = false;
     int counter = 0;
 
     public Memory() {
         memory = new int[2048];
-        // instructionMemory = new int[1024];
         try {
             readassembltfile();
         } catch (FileNotFoundException e) {
@@ -268,11 +266,13 @@ public class Memory {
         }
 
     }
-public void printMemory(){
-        for(int i = 0; i < this.counter; i++){
-            System.out.println("memory[ "+ i +" ] :"+memory[i]);
+
+    public void printMemory() {
+        for (int i = 0; i < counter; i++) {
+            System.out.println("memory[ " + i + " ] :" + memory[i]);
         }
-}
+    }
+
     public static void main(String[] args) {
         Memory memory = new Memory();
         memory.printMemory();

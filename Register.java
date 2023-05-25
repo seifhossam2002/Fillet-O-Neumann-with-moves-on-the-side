@@ -21,4 +21,8 @@ public class Register {
 			this.value = value;
 	}
 
+	@Override
+	public String toString() {
+		return "Register [name=" + name + ", value=" + value + "]";
+	}
 }
