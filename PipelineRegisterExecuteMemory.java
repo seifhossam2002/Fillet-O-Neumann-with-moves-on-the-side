@@ -3,11 +3,13 @@ public class PipelineRegisterExecuteMemory {
     private Register r1;
     private int address;
     private int opcode;
+    private boolean isBranchTaken;
 
     public PipelineRegisterExecuteMemory() {
         super();
         this.r1 = null;
         pc = 0;
+        isBranchTaken = false;
     }
 
     public int getPc() {
@@ -44,5 +46,13 @@ public class PipelineRegisterExecuteMemory {
 
     public int getOpcode() {
         return opcode;
+    }
+
+    public boolean isBranchTaken() {
+        return isBranchTaken;
+    }
+
+    public void setBranchTaken(boolean isBranchTaken) {
+        this.isBranchTaken = isBranchTaken;
     }
 }
