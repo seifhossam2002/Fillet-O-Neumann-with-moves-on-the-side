@@ -269,7 +269,7 @@ public class Memory {
 
     }
 public void printMemory(){
-        for(int i = 0; i < memory.counter; i++){
+        for(int i = 0; i < this.counter; i++){
             System.out.println("memory[ "+ i +" ] :"+memory[i]);
         }
 }
