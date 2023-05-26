@@ -3,12 +3,14 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.util.ArrayList;
 
 public class Memory {
     int[] memory;
     boolean flagimm = false;
     boolean flagshamt = false;
     int counter = 0;
+    ArrayList<potentialHazard> hazards = new ArrayList<potentialHazard>();
 
     public Memory() {
         memory = new int[2048];
@@ -68,8 +70,9 @@ public class Memory {
                         instruction = opcode + r1 + r2 + r3 + "0000000000000";
                     }
                     BigInteger bigInteger = new BigInteger(instruction, 2);
-                    // int instruction2 = (int)Long.parseLong(instruction, 2);
-                    memory[counter] = bigInteger.intValue();
+                    // memory[counter] = bigInteger.intValue();
+                    potentialHazard hazard = new potentialHazard(r1,r2, r3);   //zyada
+                    counter = ay7aga(hazard, counter, bigInteger.intValue()); //zyada
                     counter++;
                 } else if (parts.length == 3) {
                     String opcode = parts[0];
@@ -87,8 +90,9 @@ public class Memory {
                     imm = imm3;
                     String instruction = opcode + r1 + "00000" + imm;
                     BigInteger bigInteger = new BigInteger(instruction, 2);
-
-                    memory[counter] = bigInteger.intValue();
+                    // memory[counter] = bigInteger.intValue();
+                    potentialHazard hazard = new potentialHazard(r1,"null", "null");
+                    counter = ay7aga(hazard, counter, bigInteger.intValue()); //zyada
                     counter++;
 
                 } else if (parts.length == 2) {
@@ -119,6 +123,33 @@ public class Memory {
         }
 
     }
+
+    public int ay7aga(potentialHazard hazard, int counter, int instruction) {
+        if (hazards.size() == 0) {
+            hazards.add(hazard);
+            memory[counter] = instruction;
+        } else {
+            boolean flag = false;
+            for (int i = hazards.size() - 1; i >= Math.max(0, hazards.size() - 3); i--) {
+                if (hazards.get(i).r1.equals(hazard.r2) || hazards.get(i).r1.equals(hazard.r3)) {
+                    memory[counter] = -1;
+                    counter++;
+                    memory[counter] = -1;
+                    counter++;
+                    memory[counter] = instruction;
+                    hazards.add(hazard);
+                    hazards.add(hazard);
+                    flag = true;
+                }
+            }
+            if (!flag) {
+                hazards.add(hazard);
+                memory[counter] = instruction;
+            }
+        }
+        return counter;
+    }
+    
 
     public String changetobinary(String assembly) {
         // ADD,SUB,MUL,MOVI,JEQ,AND,XORI,JMP,LSL,LSR,MOVR,MOVM

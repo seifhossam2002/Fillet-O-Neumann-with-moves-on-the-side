@@ -14,7 +14,6 @@ public class Main {
 	static boolean canEnterMemory = true;
 	static boolean canEnterWriteBack = true;
 	static boolean clear = false;
-	static Hashtable<Integer, Boolean> isJEQ;
 
 	// static int clockcycle = 1;
 
@@ -156,6 +155,9 @@ public class Main {
 			System.out.println("current pc" + pipelineRegisterExecuteMemory.getPc());
 		}
 		instruction = memory.memory[pc.getValue()];
+		if(instruction == -1){
+			instruction = 0;
+		}
 		pipelineRegisterFetchDecode.setInstructionLine(instruction);
 		pipelineRegisterFetchDecode.setPc(pc.getValue() + 1);
 		pc.setValue(pc.getValue() + 1);
@@ -392,12 +394,12 @@ public class Main {
 
 	public static void main(String[] args) {
 		Main main = new Main();
-		registerFile.setValue(7, 3);
-		registerFile.setValue(8, 4);
+		// registerFile.setValue(7, 3);
+		// registerFile.setValue(8, 4);
 		registerFile.setValue(2, 6);
-		registerFile.setValue(3, 6);
-		registerFile.setValue(13, 7);
-		registerFile.setValue(6, 8);
+		registerFile.setValue(4, 1);
+		// registerFile.setValue(13, 7);
+		// registerFile.setValue(6, 8);
 
 		start();
 
