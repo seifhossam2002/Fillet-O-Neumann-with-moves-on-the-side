@@ -132,9 +132,9 @@ public class Memory {
             boolean flag = false;
             for (int i = hazards.size() - 1; i >= Math.max(0, hazards.size() - 3); i--) {
                 if (hazards.get(i).r1.equals(hazard.r2) || hazards.get(i).r1.equals(hazard.r3)) {
-                    memory[counter] = -1;
+                    memory[counter] = 0;
                     counter++;
-                    memory[counter] = -1;
+                    memory[counter] = 0;
                     counter++;
                     memory[counter] = instruction;
                     hazards.add(hazard);

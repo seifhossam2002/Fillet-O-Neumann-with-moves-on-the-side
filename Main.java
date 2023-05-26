@@ -155,7 +155,7 @@ public class Main {
 			System.out.println("current pc" + pipelineRegisterExecuteMemory.getPc());
 		}
 		instruction = memory.memory[pc.getValue()];
-		if(instruction == -1){
+		if(instruction == 0){
 			instruction = 0;
 		}
 		pipelineRegisterFetchDecode.setInstructionLine(instruction);
@@ -396,8 +396,8 @@ public class Main {
 		Main main = new Main();
 		// registerFile.setValue(7, 3);
 		// registerFile.setValue(8, 4);
-		registerFile.setValue(2, 6);
-		registerFile.setValue(4, 1);
+		// registerFile.setValue(2, 6);
+		// registerFile.setValue(4, 1);
 		// registerFile.setValue(13, 7);
 		// registerFile.setValue(6, 8);
 
