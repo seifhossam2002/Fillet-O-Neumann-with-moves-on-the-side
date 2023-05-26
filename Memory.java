@@ -44,7 +44,10 @@ public class Memory {
                     r1 = changetobinary(r1);
                     r2 = changetobinary(r2);
                     String instruction = "";
+                    boolean hazardImm = false;
+                    boolean hazardShamt = false;
                     if (this.flagimm == true) {
+                        hazardImm = true;
                         this.flagimm = false;
                         int imm = Integer.parseInt(r3);
                         String imm2 = Integer.toBinaryString(imm);
@@ -56,6 +59,7 @@ public class Memory {
                         instruction = opcode + r1 + r2 + r3;
 
                     } else if (flagshamt) {
+                        hazardShamt = true;
                         flagshamt = false;
                         int imm = Integer.parseInt(r3);
                         String imm2 = Integer.toBinaryString(imm);
@@ -71,8 +75,16 @@ public class Memory {
                     }
                     BigInteger bigInteger = new BigInteger(instruction, 2);
                     // memory[counter] = bigInteger.intValue();
-                    potentialHazard hazard = new potentialHazard(r1,r2, r3);   //zyada
-                    counter = ay7aga(hazard, counter, bigInteger.intValue()); //zyada
+                    if(hazardImm || hazardShamt){
+                        hazardImm = false;
+                        hazardShamt = false;
+                        potentialHazard hazard = new potentialHazard(r1,r2, "null");   //zyada
+                        counter = ay7aga(hazard, counter, bigInteger.intValue()); //zyada
+                    }
+                    else{
+                        potentialHazard hazard = new potentialHazard(r1,r2, r3);   //zyada
+                        counter = ay7aga(hazard, counter, bigInteger.intValue()); //zyada
+                    }
                     counter++;
                 } else if (parts.length == 3) {
                     String opcode = parts[0];
