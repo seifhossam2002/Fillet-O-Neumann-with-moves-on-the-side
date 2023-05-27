@@ -45,7 +45,7 @@ public class Main {
 			if (clockcycle > 5 && clockcycle % 2 == 0 && canEnterMemory) {// even
 				memory();
 				canEnterWriteBack = true;
-				
+
 			}
 
 			if (clockcycle > 3 && canEnterExecute) {// odd
@@ -107,7 +107,8 @@ public class Main {
 		System.out.println("Clock cycle: " + clockcycle);
 		System.out.println("Fetch/Decode: " + pipelineRegisterFetchDecode.getInstructionLine() + " "
 				+ pipelineRegisterFetchDecode.getPc());
-		System.out.print("Decode/Execute: " + pipelineRegisterDecodeExcute.getOpcode() + " " + " " +
+		System.out.print("Decode/Execute: pc" + pipelineRegisterDecodeExcute.getPc() + " "
+				+ pipelineRegisterDecodeExcute.getOpcode() + " " + " " +
 				pipelineRegisterDecodeExcute.getShamt() + " " + pipelineRegisterDecodeExcute.getImm() + " " +
 				pipelineRegisterDecodeExcute.getAddress() + " ");
 		try {
@@ -155,7 +156,7 @@ public class Main {
 			System.out.println("current pc" + pipelineRegisterExecuteMemory.getPc());
 		}
 		instruction = memory.memory[pc.getValue()];
-		if(instruction == 0){
+		if (instruction == 0) {
 			instruction = 0;
 		}
 		pipelineRegisterFetchDecode.setInstructionLine(instruction);
@@ -294,7 +295,7 @@ public class Main {
 					myPc += imm;
 					pipelineRegisterExecuteMemory.setBranchTaken(true);
 					clear = true;
-					pipelineRegisterMemoryWriteBack.setStore(false);					
+					pipelineRegisterMemoryWriteBack.setStore(false);
 				}
 				break;
 			case 5:
@@ -311,7 +312,7 @@ public class Main {
 				// JMP
 				int temp = (myPc & 0b1111000000000000000000000000000);
 				String tmp = temp + "" + address;
-				myPc = Integer.parseInt(tmp)-1;
+				myPc = Integer.parseInt(tmp) - 1;
 				pipelineRegisterExecuteMemory.setBranchTaken(true);
 				clear = true;
 				pipelineRegisterMemoryWriteBack.setStore(false);
@@ -372,7 +373,7 @@ public class Main {
 			pipelineRegisterMemoryWriteBack.setR1Value(r1.getValue());
 			pipelineRegisterMemoryWriteBack.setStore(true);
 		}
-		if(isBranchTaken){
+		if (isBranchTaken) {
 			clear = true;
 			pipelineRegisterMemoryWriteBack.setStore(false);
 		}

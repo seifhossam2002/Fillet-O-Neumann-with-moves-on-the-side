@@ -3,12 +3,14 @@ public class jumpCondition {
     private int destinaton = 0;
     private boolean done;
     private String opcode;
+    private int address;
 
-    public jumpCondition(int ogAdress, int destinaton,String opcode) {
+    public jumpCondition(int ogAdress, int destinaton,String opcode,int address) {
         this.ogAdress = ogAdress;
         this.destinaton = destinaton;
         done = false;
         this.opcode = opcode;
+        this.address = address;
     }
 
     public int getOgAdress() {
@@ -41,5 +43,13 @@ public class jumpCondition {
 
     public void setOpcode(String opcode) {
         this.opcode = opcode;
+    }
+
+    public int getAddress() {
+        return address;
+    }
+
+    public void setAddress(int address) {
+        this.address = address;
     }
 }

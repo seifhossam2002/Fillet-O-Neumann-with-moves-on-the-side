@@ -58,7 +58,11 @@ public class Memory {
                         }
                         r3 = imm2;
                         instruction = opcode + r1 + r2 + r3;
-
+                        if (opcode.equals("0100")) {
+                            int destination = getDestination(imm);
+                            jumpCondition jump = new jumpCondition(counter, destination, opcode,imm); // zyada
+                            jumps.add(jump); // zyada
+                        }
                     } else if (flagshamt) {
                         hazardShamt = true;
                         flagshamt = false;
@@ -112,7 +116,8 @@ public class Memory {
                     String address = parts[1];
                     opcode = changetobinary(opcode);
                     int address2 = Integer.parseInt(address);
-                    jumpCondition jump = new jumpCondition(counter, address2,opcode); // zyada
+                    int destination = getDestination(address2);
+                    jumpCondition jump = new jumpCondition(counter, destination, opcode,address2); // zyada
                     jumps.add(jump); // zyada
                     String address3 = Integer.toBinaryString(address2);
                     int size = 28 - address3.length();
@@ -131,8 +136,8 @@ public class Memory {
             reader.close();
             this.counter = counter;
 
-            for(jumpCondition jump: jumps){
-                int address = jump.getDestinaton();
+            for (jumpCondition jump : jumps) {
+                int address = jump.getAddress();
                 int index = jump.getOgAdress();
                 String opcode = jump.getOpcode();
                 String address2 = Integer.toBinaryString(address);
@@ -144,12 +149,108 @@ public class Memory {
                 BigInteger bigInteger = new BigInteger(instruction3, 2);
                 memory[index] = bigInteger.intValue();
             }
+            for(int i=0;i<jumps.size();i++){
+                System.out.print(jumps.get(i));
+            }
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println("File does not exist.");
 
         }
 
+    }
+
+    private int getDestination(int address2) {
+        int counter = 0;
+        try (BufferedReader reader = new BufferedReader(new FileReader("config.txt"))) {
+            String line = reader.readLine();
+            while (line != null) {
+                if (address2 == counter) {
+                    return generateInstruction(line);
+                }
+                line = reader.readLine();
+                counter++;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+    
+
+    private int generateInstruction(String line) {
+        String[] parts = line.split(" ");
+        if (parts.length == 4) {
+            String opcode = parts[0];
+            String r1 = parts[1];
+            String r2 = parts[2];
+            String r3 = parts[3];
+
+            opcode = changetobinary(opcode);
+            r1 = changetobinary(r1);
+            r2 = changetobinary(r2);
+            String instruction = "";
+            if (this.flagimm == true) {
+                this.flagimm = false;
+                int imm = Integer.parseInt(r3);
+                String imm2 = Integer.toBinaryString(imm);
+                int size = 18 - imm2.length();
+                for (int i = 0; i < size; i++) {
+                    imm2 = "0" + imm2;
+                }
+                r3 = imm2;
+                instruction = opcode + r1 + r2 + r3;
+
+            } else if (flagshamt) {
+                flagshamt = false;
+                int imm = Integer.parseInt(r3);
+                String imm2 = Integer.toBinaryString(imm);
+                int size = 18 - imm2.length();
+                for (int i = 0; i < size; i++) {
+                    imm2 = "0" + imm2;
+                }
+                r3 = imm2;
+                instruction = opcode + r1 + r2 + r3;
+            } else {
+                r3 = changetobinary(r3);
+                instruction = opcode + r1 + r2 + r3 + "0000000000000";
+            }
+            BigInteger bigInteger = new BigInteger(instruction, 2);
+            return bigInteger.intValue();
+        } else if (parts.length == 3) {
+            String opcode = parts[0];
+            String r1 = parts[1];
+            String imm = parts[2];
+            opcode = changetobinary(opcode);
+            r1 = changetobinary(r1);
+
+            int imm2 = Integer.parseInt(imm);
+            String imm3 = Integer.toBinaryString(imm2);
+            int size = 18 - imm3.length();
+            for (int i = 0; i < size; i++) {
+                imm3 = "0" + imm3;
+            }
+            imm = imm3;
+            String instruction = opcode + r1 + "00000" + imm;
+            BigInteger bigInteger = new BigInteger(instruction, 2);
+            return bigInteger.intValue();
+
+        } else if (parts.length == 2) {
+            String opcode = parts[0];
+            String address = parts[1];
+            opcode = changetobinary(opcode);
+            int address2 = Integer.parseInt(address);
+            String address3 = Integer.toBinaryString(address2);
+            int size = 28 - address3.length();
+            for (int i = 0; i < size; i++) {
+                address3 = "0" + address3;
+            }
+            address = address3;
+            String instruction = opcode + address;
+            BigInteger bigInteger = new BigInteger(instruction, 2);
+            return bigInteger.intValue();
+        }
+        return 0;
     }
 
     public int ay7aga(potentialHazard hazard, int counter, int instruction) {
@@ -160,6 +261,7 @@ public class Memory {
             boolean flag = false;
             for (int i = hazards.size() - 1; i >= Math.max(0, hazards.size() - 3); i--) {
                 if (hazards.get(i).r1.equals(hazard.r2) || hazards.get(i).r1.equals(hazard.r3)) {
+
                     memory[counter] = 0;
                     counter++;
                     memory[counter] = 0;
@@ -173,18 +275,13 @@ public class Memory {
             if (!flag) {
                 hazards.add(hazard);
                 memory[counter] = instruction;
-            } else {
-                for (jumpCondition jump : jumps) {
-                    if (!jump.isDone()) {
-                        if (jump.getDestinaton() == counter)
-                            jump.setDone();
-                        else if (jump.getDestinaton() == counter - 2)
-                            jump.setDestinaton(jump.getDestinaton() + 2);
-                        else if (jump.getDestinaton() == counter - 1) {
-                            jump.setDestinaton(jump.getDestinaton() + 1);
-                            jump.setDone();
-                        } else
-                            jump.setDestinaton(jump.getDestinaton() + 2);
+            }
+            for (jumpCondition jump : jumps) {
+                if (!jump.isDone()) {
+                    if(flag)
+                        jump.setAddress(jump.getAddress()+2);
+                    if (jump.getDestinaton() == instruction) {
+                        jump.setDone();
                     }
                 }
             }
