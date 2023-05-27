@@ -11,6 +11,7 @@ public class Memory {
     boolean flagshamt = false;
     int counter = 0;
     ArrayList<potentialHazard> hazards = new ArrayList<potentialHazard>();
+    ArrayList<jumpCondition> jumps = new ArrayList<jumpCondition>();
 
     public Memory() {
         memory = new int[2048];
@@ -75,15 +76,14 @@ public class Memory {
                     }
                     BigInteger bigInteger = new BigInteger(instruction, 2);
                     // memory[counter] = bigInteger.intValue();
-                    if(hazardImm || hazardShamt){
+                    if (hazardImm || hazardShamt) {
                         hazardImm = false;
                         hazardShamt = false;
-                        potentialHazard hazard = new potentialHazard(r1,r2, "null");   //zyada
-                        counter = ay7aga(hazard, counter, bigInteger.intValue()); //zyada
-                    }
-                    else{
-                        potentialHazard hazard = new potentialHazard(r1,r2, r3);   //zyada
-                        counter = ay7aga(hazard, counter, bigInteger.intValue()); //zyada
+                        potentialHazard hazard = new potentialHazard(r1, r2, "null"); // zyada
+                        counter = ay7aga(hazard, counter, bigInteger.intValue()); // zyada
+                    } else {
+                        potentialHazard hazard = new potentialHazard(r1, r2, r3); // zyada
+                        counter = ay7aga(hazard, counter, bigInteger.intValue()); // zyada
                     }
                     counter++;
                 } else if (parts.length == 3) {
@@ -103,8 +103,8 @@ public class Memory {
                     String instruction = opcode + r1 + "00000" + imm;
                     BigInteger bigInteger = new BigInteger(instruction, 2);
                     // memory[counter] = bigInteger.intValue();
-                    potentialHazard hazard = new potentialHazard(r1,"null", "null");
-                    counter = ay7aga(hazard, counter, bigInteger.intValue()); //zyada
+                    potentialHazard hazard = new potentialHazard(r1, "null", "null");
+                    counter = ay7aga(hazard, counter, bigInteger.intValue()); // zyada
                     counter++;
 
                 } else if (parts.length == 2) {
@@ -112,6 +112,8 @@ public class Memory {
                     String address = parts[1];
                     opcode = changetobinary(opcode);
                     int address2 = Integer.parseInt(address);
+                    jumpCondition jump = new jumpCondition(counter, address2,opcode); // zyada
+                    jumps.add(jump); // zyada
                     String address3 = Integer.toBinaryString(address2);
                     int size = 28 - address3.length();
                     for (int i = 0; i < size; i++) {
@@ -128,6 +130,20 @@ public class Memory {
             }
             reader.close();
             this.counter = counter;
+
+            for(jumpCondition jump: jumps){
+                int address = jump.getDestinaton();
+                int index = jump.getOgAdress();
+                String opcode = jump.getOpcode();
+                String address2 = Integer.toBinaryString(address);
+                int size = 28 - address2.length();
+                for (int i = 0; i < size; i++) {
+                    address2 = "0" + address2;
+                }
+                String instruction3 = opcode + address2;
+                BigInteger bigInteger = new BigInteger(instruction3, 2);
+                memory[index] = bigInteger.intValue();
+            }
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println("File does not exist.");
@@ -157,11 +173,24 @@ public class Memory {
             if (!flag) {
                 hazards.add(hazard);
                 memory[counter] = instruction;
+            } else {
+                for (jumpCondition jump : jumps) {
+                    if (!jump.isDone()) {
+                        if (jump.getDestinaton() == counter)
+                            jump.setDone();
+                        else if (jump.getDestinaton() == counter - 2)
+                            jump.setDestinaton(jump.getDestinaton() + 2);
+                        else if (jump.getDestinaton() == counter - 1) {
+                            jump.setDestinaton(jump.getDestinaton() + 1);
+                            jump.setDone();
+                        } else
+                            jump.setDestinaton(jump.getDestinaton() + 2);
+                    }
+                }
             }
         }
         return counter;
     }
-    
 
     public String changetobinary(String assembly) {
         // ADD,SUB,MUL,MOVI,JEQ,AND,XORI,JMP,LSL,LSR,MOVR,MOVM

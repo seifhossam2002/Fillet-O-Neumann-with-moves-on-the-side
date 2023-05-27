@@ -398,7 +398,7 @@ public class Main {
 		registerFile.setValue(2, 4);
 		registerFile.setValue(3, 6);
 		// registerFile.setValue(4, 1);
-		registerFile.setValue(5, 6);
+		registerFile.setValue(5, 7);
 		registerFile.setValue(6, 8);
 
 		start();
