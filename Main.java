@@ -394,12 +394,12 @@ public class Main {
 
 	public static void main(String[] args) {
 		Main main = new Main();
-		// registerFile.setValue(7, 3);
-		// registerFile.setValue(8, 4);
-		// registerFile.setValue(2, 6);
+		// registerFile.setValue(1, 3);
+		registerFile.setValue(2, 4);
+		registerFile.setValue(3, 6);
 		// registerFile.setValue(4, 1);
-		// registerFile.setValue(13, 7);
-		// registerFile.setValue(6, 8);
+		registerFile.setValue(5, 6);
+		registerFile.setValue(6, 8);
 
 		start();
 
