@@ -66,7 +66,7 @@ public class Main {
 					counterDecode++;
 			}
 
-			if (clockcycle % 2 == 1 && pc.getValue() <= memory.counter - 1) {// odd
+			if (clockcycle % 2 == 1) {// odd
 				fetch();
 				canEnterDecode = true;
 			}
